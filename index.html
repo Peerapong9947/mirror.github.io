@@ -1,0 +1,506 @@
+<html lang="th"> 
+
+<head> 
+
+<meta charset="UTF-8"> 
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+
+<title>Mirror My Mind</title> 
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script> 
+
+<style> 
+
+body { margin:0; padding:0; font-family:'Comic Sans MS', cursive; text-align:center; background:linear-gradient(120deg,#ffd6e8,#e6f0ff,#fff0f5);} 
+
+.container { padding:30px 20px; border-radius:25px; background-color: rgba(255,255,255,0.8); margin:20px auto; max-width:700px; box-shadow:0 8px 20px rgba(255,153,204,0.3);} 
+
+.cute-text { font-size:2em; color:#ff99cc; font-weight:bold; animation:float 2s ease-in-out infinite;} 
+
+@keyframes float {0%,100%{transform:translateY(0);}50%{transform:translateY(-12px);}} 
+
+input, select, button { display:block; margin:10px auto; padding:12px; border-radius:20px; border:2px solid #ffccff; font-size:1em;} 
+
+button { background:linear-gradient(45deg,#ffccff,#99ccff); color:#fff; font-weight:bold; cursor:pointer; transition:all 0.3s ease;} 
+
+button:hover { transform:scale(1.05); background:linear-gradient(45deg,#ff99cc,#66b3ff);} 
+
+.box { border: 2px solid #ffcce0; background: #fff6fa; border-radius: 15px; padding: 15px; margin: 20px 0; text-align: left;} 
+
+#encourageBox { display:inline-block; margin-top:20px; padding:15px 25px; background: linear-gradient(45deg, #ffccff, #99ccff); border-radius:25px; color:#fff;font-weight:bold; cursor:pointer; box-shadow:0 4px 12px rgba(153,204,255,0.5); transition:all 0.3s ease;} 
+
+#encourageBox:hover{transform:scale(1.1);background:linear-gradient(45deg,#ff99cc,#66b3ff);} 
+
+.calendar { display:grid; grid-template-columns: repeat(7, 1fr); gap:5px; margin-top:20px;} 
+
+.day { padding:8px; border-radius:10px; background:#ffe6f2; font-size:0.9em; cursor:pointer;} 
+
+.chatbox { border:2px solid #ff99cc; border-radius:15px; padding:10px; height:300px; overflow-y:auto; background:#fff6fa; text-align:left; } 
+
+.chatinput { width:80%; padding:10px; border-radius:10px; border:1px solid #ffccff; margin-top:10px;} 
+
+.card-container { display:grid; grid-template-columns: repeat(4,1fr); gap:10px; margin-top:20px;} 
+
+.card { background:#ffccff; padding:20px; border-radius:15px; font-weight:bold; cursor:pointer; user-select:none; transition:0.3s; text-align:center;} 
+
+.card.matched { background:#99ccff; cursor:default; } 
+
+.card.flipped { background:#fff; } 
+
+</style> 
+
+</head> 
+
+<body> 
+
+ 
+
+<!-- หน้า0 --> 
+
+<div class="container" id="page0"> 
+
+  <h1 class="cute-text">💖เริ่มต้นการเดินทางของใจคุณ 💖💖</h1> 
+
+
+  <p style="position:absolute; bottom:10px; right:10px; font-size:0.8em;">วิทยาลัยพยาบาลบรมราชชนนี จังหวัดนนทบุรี</p> 
+
+  <button onclick="showPage(1)">คลิกเบา ๆ แล้วไปต่อ</button> 
+
+</div> 
+
+ 
+
+<!-- หน้า1 --> 
+
+<div class="container" id="page1" style="display:none;"> 
+
+  <h1 class="cute-text">🧸 Mirror My Mind 🎀</h1> 
+
+   <p> กระจกสะท้อนอารมณ์ </p>
+
+  <button onclick="showPage(2)">พร้อมแล้ว กดเลย!</button> 
+
+</div> 
+
+ 
+
+<!-- หน้า2 --> 
+
+<div class="container" id="page2" style="display:none;"> 
+
+  <h2>ก้าวแรกของความอบอุ่น เริ่มที่นี่ 🐰</h2> 
+
+  <input type="text" id="firstName" placeholder="ชื่อ" required> 
+
+  <input type="text" id="lastName" placeholder="นามสกุล" required> 
+
+  <input type="number" id="age" placeholder="อายุ" required> 
+
+  <select id="gender" required> 
+
+    <option value="">เพศ</option> 
+
+    <option value="male">ชาย</option> 
+
+    <option value="female">หญิง</option> 
+
+    <option value="other">อื่น ๆ</option> 
+
+  </select> 
+
+  <input type="email" id="email" placeholder="อีเมล" required> 
+
+  <input type="password" id="password" placeholder="รหัสผ่าน" required> 
+
+ <p><small> รหัสผ่าน (6-12 ตัวอักษร, ตัวเลขและตัวอักษรภาษาอังกฤษ) </small></p>
+
+  <button onclick="register()">สมัคร</button> 
+  <p> "เนื่องจากภายในเว็บไวต์ มีการเก็บภาพใบหน้าของท่าน เพื่อการศึกษาเท่านั้น ไม่ได้นำมาเผยเเพร่หรือใช้ในเชิงพาณิชย์"</p>
+
+</div> 
+
+ 
+
+<!-- หน้า3 สแกนหน้า --> 
+
+<div class="container" id="page3" style="display:none;"> 
+
+  <h2>สแกนใบหน้า 🎀</h2> 
+
+  <video id="video" width="300" height="225" autoplay></video> 
+
+  <canvas id="canvas" width="300" height="225" style="display:none;"></canvas> 
+  <p>"การเก็บภาพใบหน้าของท่าน เพื่อการศึกษาเท่านั้น ไม่ได้นำมาเผยเเพร่หรือใช้ในเชิงพาณิชย์"</p>
+
+  <button onclick="takePhoto()">สแกน</button> 
+
+  <p id="scanResult"></p> 
+
+</div> 
+
+ 
+
+<!-- หน้า4 สรุป --> 
+
+<div class="container" id="page4" style="display:none;"> 
+
+  <h2>สรุประดับคะแนน</h2> 
+
+  <p id="summaryText"></p> 
+
+  <canvas id="summaryChart" width="600" height="300"></canvas> 
+
+  <p id="adviceText"></p> 
+
+  <button onclick="showPage(5)"> กราฟ & ปฏิทิน</button> 
+
+</div> 
+
+ 
+
+<!-- หน้า5 ปฏิทิน --> 
+
+<div class="container" id="page5" style="display:none;"> 
+
+  <h2>📅 ปฏิทินอารมณ์</h2> 
+
+  <h3 id="monthYear"></h3> 
+
+  <div id="calendar" class="calendar"></div> 
+
+  <button onclick="prevMonth()">เดือนก่อนหน้า</button> 
+
+  <button onclick="nextMonth()">เดือนถัดไป</button> 
+
+  <button onclick="showPage(6)">รู้จักและเข้าใจมากขึ้น เริ่มตรงนี้เลย</button> 
+<button onclick="showPage(3)">สแกนหน้า</button> 
+
+</div> 
+
+ 
+
+<!-- หน้า6 เปรียบเทียบ --> 
+
+<div class="container" id="page6" style="display:none;"> 
+
+  <h2>ซึม ๆ แบบไหนที่ควรใส่ใจ? มาดูความต่างกัน</h2>
+    <div class="box">
+        <h3>ภาวะซึมเศร้า (Depression)</h3>
+        <p>คืออารมณ์เศร้าที่เกิดจากเหตุการณ์ต่าง ๆ ที่เกิดขึ้น หรืออาจจะเกิดจากการคาดการณ์ มักมีอาการเศร้ามากเกินควรและนานเกินไป แต่ยังไม่รุนแรงและมักฟื้นตัวได้เร็วกว่า</p>
+  </div> 
+
+  <div class="box"> 
+
+    <h3>โรคซึมเศร้า</h3> 
+
+    <p>เป็นความผิดปกติทางอารมณ์และจิตเวชที่มีอาการเศร้าเรื้อรัง สูญเสียความสนใจ รู้สึกไร้ค่า และมีผลต่อพฤติกรรม อาจมีอาการทางร่างกายร่วมด้วย เช่น กินนอนไม่ปกติ อ่อนเพลีย ต้องได้รับการดูแลจากแพทย์</p>
+    </div>
+    <p>เพราะความรู้สึกของคุณสำคัญ โทรสายด่วนสุขภาพจิต : <strong>1323</strong></p>
+
+
+  <button onclick="showPage(7)">เพื่อนคุย AI</button> 
+
+  <button onclick="showPage(8)">จับคู่จิ้มใจ</button>
+  <button onclick="showPage(5)">กลับไปปฏิทิน</button>
+
+</div> 
+
+ 
+
+<!-- หน้า7 แชทบอท --> 
+
+<div class="container" id="page7" style="display:none;"> 
+
+  <h2>🤖 เพื่อนคุย AI</h2> 
+
+  <div class="chatbox" id="chatbox"></div> 
+
+  <input type="text" id="chatinput" class="chatinput" placeholder="พิมพ์ข้อความ..."> 
+
+  <button onclick="sendMessage()">ส่ง</button> 
+
+  <button onclick="showPage(6)">กลับ</button> 
+
+</div> 
+
+ 
+
+<!-- หน้า8 เกมจับคู่ --> 
+
+<div class="container" id="page8" style="display:none;"> 
+
+  <h2>🎮 เกมจับคู่จิ้มใจ 🎮</h2> 
+
+  <p>จับคู่คำศัพท์ให้ตรงกัน </p> 
+
+  <div id="gameArea" class="card-container"></div> 
+
+  <button onclick="showPage(6)">กลับ</button>
+
+</div> 
+
+ 
+
+<audio id="bgMusic" autoplay loop> 
+
+  <source src="https://www.bensound.com/bensound-music/bensound-sunny.mp3" type="audio/mp3"> 
+
+</audio> 
+
+ 
+
+<script> 
+
+let currentPage=0; 
+
+function showPage(num){ 
+
+  for(let i=0;i<=8;i++){ document.getElementById('page'+i).style.display=(i===num)?'block':'none'; } 
+
+  currentPage=num; 
+
+  if(num===3){ startCamera(); } 
+
+  if(num===4){ showSummary(); } 
+
+  if(num===5){ showCalendar(); } 
+
+  if(num===8){ startGame(); } 
+
+} 
+
+ 
+
+// สมัคร 
+
+function register(){ 
+
+  const f=document.getElementById('firstName').value.trim(); 
+
+  const l=document.getElementById('lastName').value.trim(); 
+
+  const a=document.getElementById('age').value.trim(); 
+
+  const g=document.getElementById('gender').value.trim(); 
+
+  const e=document.getElementById('email').value.trim(); 
+
+  const p=document.getElementById('password').value.trim(); 
+
+  const re=/^(?=.*[0-9])(?=.*[a-zA-Z]).{6,12}$/; 
+
+  if(!f||!l||!a||!g||!e||!p){alert("กรอกข้อมูลให้ครบ"); return;} 
+
+  if(!re.test(p)){alert("รหัสผ่านไม่ถูกต้อง"); return;} 
+
+  localStorage.setItem('user',JSON.stringify({f,l,a,g,e,p})); 
+
+  showPage(3); 
+
+} 
+
+ 
+
+// กล้อง 
+
+const video=document.getElementById('video'); 
+
+function startCamera(){ 
+
+  if(navigator.mediaDevices.getUserMedia){ 
+
+    navigator.mediaDevices.getUserMedia({video:true}).then(stream=>{video.srcObject=stream;}); 
+
+  } 
+
+} 
+
+function takePhoto(){ 
+
+  const canvas=document.getElementById('canvas'); 
+
+  canvas.getContext('2d').drawImage(video,0,0,canvas.width,canvas.height); 
+
+  const val=Math.floor(Math.random()*11); // 0-10 
+
+  let levels=["ไม่เศร้า","เศร้าน้อย","เศร้าปานกลาง","เศร้าปานกลาง","เศร้าปานกลาง","เศร้าปานกลาง","เศ้ามาก","เศ้ามาก","เศ้ามาก","เศ้ามาก","เศ้ามากที่สุด"]; 
+
+  let advice=["","พักผ่อนบ้าง","พยายามผ่อนคลาย","หากังวลให้ปรึกษาเพื่อน/ครอบครัว","ควรปรึกษาจิตแพทย์ทันที"]; 
+
+  document.getElementById('scanResult').innerText=`ระดับ: ${val}/10 - ${levels[val]} ${advice[Math.floor(val/3)]}`; 
+
+  localStorage.setItem('lastMood',val); 
+
+  // เก็บในปฏิทิน 
+
+  const today=new Date(); const key=`mood_${today.getFullYear()}_${today.getMonth()}_${today.getDate()}`; 
+
+  localStorage.setItem(key,val); 
+
+  showPage(4); 
+
+} 
+
+ 
+
+// สรุป 
+
+function showSummary(){ 
+
+  const val=parseInt(localStorage.getItem('lastMood')||0); 
+
+  const ctx=document.getElementById('summaryChart').getContext('2d'); 
+
+  new Chart(ctx,{type:'bar',data:{labels:['ระดับเศร้า'],datasets:[{data:[val],backgroundColor:['#ff99cc']}]},options:{scales:{y:{min:0,max:10}}}}); 
+
+  document.getElementById('summaryText').innerText="คะแนนความเศร้า: "+val+"/10"; 
+
+  let adviceText=""; 
+
+  if(val<=3) adviceText="คุณอยู่ในระดับปลอดภัย"; 
+
+  else if(val<=6) adviceText="พยายามผ่อนคลายและพักผ่อนให้เพียงพอ"; 
+
+  else adviceText="ควรปรึกษาผู้เชี่ยวชาญด้านจิตเวช"; 
+
+  document.getElementById('adviceText').innerText=adviceText; 
+
+} 
+
+ 
+
+// ปฏิทิน 
+
+let currentMonth=new Date().getMonth(); 
+
+let currentYear=new Date().getFullYear(); 
+
+const monthNames=["มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน","กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม"]; 
+
+function showCalendar(){ 
+
+  const cal=document.getElementById('calendar'); cal.innerHTML=""; 
+
+  document.getElementById('monthYear').innerText=monthNames[currentMonth]+" "+currentYear; 
+
+  const daysInMonth=new Date(currentYear,currentMonth+1,0).getDate(); 
+
+  for(let d=1;d<=daysInMonth;d++){ 
+
+    const div=document.createElement('div'); div.className="day"; 
+
+    const key=`mood_${currentYear}_${currentMonth}_${d}`; 
+
+    const val=parseInt(localStorage.getItem(key)||"-"); 
+
+    div.textContent=d + (val>=0?` : ${val}/10`:""); 
+
+    div.onclick=()=>{ alert(`วันที่ ${d} ของเดือนนี้: ระดับเศร้า ${val>=0?val:"ยังไม่มี"} /10`); }; 
+
+    cal.appendChild(div); 
+
+  } 
+
+} 
+
+function nextMonth(){ currentMonth=(currentMonth+1)%12; showCalendar();} 
+
+function prevMonth(){ currentMonth=(currentMonth+11)%12; showCalendar();} 
+
+ 
+
+// ChatBot 
+
+function sendMessage(){ 
+
+  const input=document.getElementById('chatinput'); if(!input.value) return; 
+
+  const chat=document.getElementById('chatbox'); 
+
+  const userMsg=document.createElement('div'); userMsg.textContent="คุณ: "+input.value; chat.appendChild(userMsg); 
+
+  const botMsg=document.createElement('div'); botMsg.textContent="Bot: "+getBotReply(input.value); chat.appendChild(botMsg); 
+
+  chat.scrollTop=chat.scrollHeight; input.value=""; 
+
+} 
+
+function getBotReply(msg){ 
+
+  msg=msg.toLowerCase(); 
+
+  if(msg.includes("เศร้า")) return "ฉันเข้าใจความรู้สึกของคุณนะ พยายามหายใจลึกๆ แล้วค่อยๆ ผ่อนคลาย"; 
+
+  if(msg.includes("เหนื่อย")) return "ลองพักสายตาและเดินเล่นสัก 5 นาทีค่ะ"; 
+
+  return "ฉันอยู่ที่นี่ ถ้าคุณอยากพูดคุยกับฉัน 😊"; 
+
+} 
+
+ 
+
+// เกมจับคู่ 
+
+let cards=[],flipped=[],matched=[]; 
+
+function startGame(){ 
+
+  const gameArea=document.getElementById('gameArea'); gameArea.innerHTML=""; 
+
+  const pairs=["ความสุข","Happiness","เศร้า","Sad","สงบ","Calm"]; 
+
+  cards=pairs.concat(pairs).sort(()=>0.5-Math.random()); 
+
+  flipped=[]; matched=[]; 
+
+  for(let i=0;i<cards.length;i++){ 
+
+    const c=document.createElement('div'); c.className="card"; c.dataset.value=cards[i]; c.innerText="?"; 
+
+    c.onclick=()=>flipCard(c); 
+
+    gameArea.appendChild(c); 
+
+  } 
+
+} 
+
+function flipCard(c){ 
+
+  if(c.classList.contains("flipped")||c.classList.contains("matched")||flipped.length>=2) return; 
+
+  c.classList.add("flipped"); c.innerText=c.dataset.value; flipped.push(c); 
+
+  if(flipped.length===2){ 
+
+    setTimeout(()=>{ checkMatch(); },500); 
+
+  } 
+
+} 
+
+function checkMatch(){ 
+
+  if(flipped[0].dataset.value===flipped[1].dataset.value){ 
+
+    flipped[0].classList.add("matched"); flipped[1].classList.add("matched"); matched.push(...flipped); 
+
+    if(matched.length===cards.length) alert("คุณชนะเกม! 🎉"); 
+
+  } else { 
+
+    flipped.forEach(c=>{c.classList.remove("flipped"); c.innerText="?";}); 
+
+  } 
+
+  flipped=[]; 
+
+} 
+
+</script> 
+
+</body> 
+
+</html> 
+
